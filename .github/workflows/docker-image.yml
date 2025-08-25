@@ -48,27 +48,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 如需 Docker Hub，改用：
-      # - name: Log in to Docker Hub
-      #   uses: docker/login-action@v3
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # 并将 REGISTRY 改为 docker.io，IMAGE_NAME 改为 <namespace>/vllm-cpu
-
       - name: Compute image tags
         id: meta
         run: |
-          # 优先使用输入的 image_tag；否则用 tag 名；否则用短 SHA
-          if [ -n "${{ inputs.image_tag }}" ]; then
-            TAG="${{ inputs.image_tag }}"
-          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            TAG="${GITHUB_REF#refs/tags/}"
-          else
-            TAG="${GITHUB_SHA::7}"
-          fi
-          echo "tag=${TAG}" >> $GITHUB_OUTPUT
-          echo "tags=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-cpu" >> $GITHUB_OUTPUT
+          REPO=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
+          TAG="${GITHUB_SHA::7}"   # 或者从 tag/ref 里提取
+          echo "tags=ghcr.io/${REPO}/vllm-cpu:${TAG},ghcr.io/${REPO}/vllm-cpu:latest" >> $GITHUB_OUTPUT
 
       - name: Build and push (multi-arch)
         uses: docker/build-push-action@v6
