@@ -52,8 +52,7 @@ jobs:
         id: meta
         run: |
           REPO=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
-          TAG="${GITHUB_SHA::7}"   # 或者从 tag/ref 里提取
-          echo "tags=ghcr.io/${REPO}/vllm-cpu:${TAG},ghcr.io/${REPO}/vllm-cpu:latest" >> $GITHUB_OUTPUT
+          echo "tags=ghcr.io/${REPO}/vllm-cpu:latest" >> $GITHUB_OUTPUT
 
       - name: Build and push (multi-arch)
         uses: docker/build-push-action@v6
