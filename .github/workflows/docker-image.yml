@@ -58,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./.docker/Dockerfile.cpu
+          file: ./docker/Dockerfile.cpu
           # 如果你的 Dockerfile 里有多阶段并且需要特定 target（如 vllm-openai），取消下一行注释
           # target: vllm-openai
           push: true
